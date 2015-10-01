@@ -7,9 +7,9 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>DisableTurboBoost</string>
+	<string>NoBatteryNoProblem</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.nanoant.DisableTurboBoost</string>
+	<string>me.conductive.NoBatteryNoProblem</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
