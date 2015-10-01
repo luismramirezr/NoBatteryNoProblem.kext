@@ -1,7 +1,7 @@
-Turbo Boost Disabler for Mac OS X
+NoBatteryNoProblem for Mac OS X
 =================================
 
-This kernel extension `DisableTurboBoost.kext` lets you disable [Intel Turbo Boost Technology](http://www.intel.com/content/www/us/en/architecture-and-technology/turbo-boost/turbo-boost-technology.html) present on latest Intel Core processors running *Mac OS X*.
+This kernel extension is based on `DisableTurboBoost.kext` and lets you disable [Intel Turbo Boost Technology](http://www.intel.com/content/www/us/en/architecture-and-technology/turbo-boost/turbo-boost-technology.html) and BD Prochot functionality present on latest Intel Core processors running *Mac OS X*.
 
 Abstract
 --------
@@ -12,7 +12,9 @@ As observed *Turbo Boost* triggers when process is occupying 100% of single CPU 
 
 Disabling *Turbo Boost* makes CPU run same clock regardless of cores occupation, therefore we get desired close to 4x speedup when running 4 cores OpenMP program vs 1 core.
 
-This program implements modification of `MSR` CPU register responsible for *Turbo Boost* control as described in [Table 34-10. MSRs Supported by Intel Processors Based on Intel Microarchitecture Code Name Sandy Bridge (Contd.) - Intel® 64 and IA-32 Architectures Software Developer’s Manual Volume 3C](http://www.intel.com/content/www/us/en/processors/architectures-software-developer-manuals.html)
+This program implements modification of `MSR` CPU register responsible for *Turbo Boost* control as described in [Table 34-10. MSRs Supported by Intel Processors Based on Intel Microarchitecture Code Name Sandy Bridge (Contd.) - Intel® 64 and IA-32 Architectures Software Developer’s Manual Volume 3C](http://www.intel.com/content/www/us/en/processors/architectures-software-developer-manuals.html).
+
+BD Prochot stands for Bi-directional Prochot, which is a signal used by peripherals to warn the CPU that they're running hot and thus initiate termal throttling. Apple uses this in their laptops to throttle (very, VERY agressively) their CPUs when the laptops are running without a battery or other hardware faults.
 
 Prerequisites
 -------------
@@ -31,10 +33,10 @@ Usage
 OS X Yosemite
 ------------
 
-In OS X 10.10 (Yosemite), Apple has introduced a new security requirement called
+In OS X 10.10 (Yosemite) and forwards, Apple has introduced a new security requirement called
 kext signing. (A kext is a kernel extension, or a driver, in Mac OS X).
 
-To use DisableTurboBoost, you need to disable the kext signing security
+To use NoBatteryNoProblem, you need to disable the kext signing security
 setting:
 
     nvram boot-args=kext-dev-mode=1
@@ -51,6 +53,7 @@ License
 -------
 
 Copyright (c) 2012 Adam Strzelecki
+Copyright (c) 2015 Bernardo Alecrim
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
