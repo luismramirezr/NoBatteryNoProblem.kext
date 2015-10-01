@@ -40,6 +40,8 @@ static void disable_tb(__unused void * param_not_used) {
 	wrmsr64(MSR_IA32_MISC_ENABLE, rdmsr64(MSR_IA32_MISC_ENABLE) | disableTurboBoost);
 }
 
+
+//Using the static data from unclewebb for now.
 static void disable_prochot(__unused void * param_not_used) {
 	wrmsr64(0x1FC, rdmsr64(0x1FC) & 0xFFFFFFFE);
 }
@@ -51,7 +53,8 @@ static void enable_tb(__unused void * param_not_used) {
 static kern_return_t start(kmod_info_t *ki, void *d) {
 	uint64_t prev = rdmsr64(MSR_IA32_MISC_ENABLE);
 	mp_rendezvous_no_intrs(disable_tb, NULL);
-	mp_rendezvous_no_intrs(disable_prochot, NULL);
+	mp_rendezvous_no_intrs(disable_prochot, NULL); //Q: does this just run my function? 
+												   //A: YEP, disables ALL interrupts and runs it. Nice. 
 	printf("Disabled Turbo Boost: %llx -> %llx\n", prev, rdmsr64(MSR_IA32_MISC_ENABLE));
 	return KERN_SUCCESS;
 }
