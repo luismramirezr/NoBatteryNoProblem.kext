@@ -40,6 +40,10 @@ static void disable_tb(__unused void * param_not_used) {
 	wrmsr64(MSR_IA32_MISC_ENABLE, rdmsr64(MSR_IA32_MISC_ENABLE) | disableTurboBoost);
 }
 
+static void disable_prochot(__unused void * param_not_used) {
+	wrmsr64(0x1FC, rdmsr64(0x1FC) & 0xFFFFFFFE);
+}
+
 static void enable_tb(__unused void * param_not_used) {
 	wrmsr64(MSR_IA32_MISC_ENABLE, rdmsr64(MSR_IA32_MISC_ENABLE) & ~disableTurboBoost);
 }
@@ -47,6 +51,7 @@ static void enable_tb(__unused void * param_not_used) {
 static kern_return_t start(kmod_info_t *ki, void *d) {
 	uint64_t prev = rdmsr64(MSR_IA32_MISC_ENABLE);
 	mp_rendezvous_no_intrs(disable_tb, NULL);
+	mp_rendezvous_no_intrs(disable_prochot, NULL);
 	printf("Disabled Turbo Boost: %llx -> %llx\n", prev, rdmsr64(MSR_IA32_MISC_ENABLE));
 	return KERN_SUCCESS;
 }
@@ -61,7 +66,7 @@ static kern_return_t stop(kmod_info_t *ki, void *d) {
 extern kern_return_t _start(kmod_info_t *ki, void *data);
 extern kern_return_t _stop(kmod_info_t *ki, void *data);
 
-KMOD_EXPLICIT_DECL(com.nanoant.DisableTurboBoost, "0.0.1", _start, _stop)
+KMOD_EXPLICIT_DECL(me.conductive.bernardo.NoBatteryNoProblem, "0.0.1", _start, _stop)
 __private_extern__ kmod_start_func_t *_realmain = start;
 __private_extern__ kmod_stop_func_t  *_antimain = stop;
 __private_extern__ int _kext_apple_cc = __APPLE_CC__;
