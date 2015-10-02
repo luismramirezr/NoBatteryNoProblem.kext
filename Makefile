@@ -1,4 +1,4 @@
-NAME := DisableTurboBoost
+NAME := NoBatteryNoProblem
 #KEXT := /System/Library/Extensions/$(NAME).kext
 KEXT := /tmp/$(NAME).kext
 DIR  := Contents/MacOS
