@@ -39,7 +39,7 @@ const uint64_t expectedFeatures  = 0x850089LL;
 const uint64_t disableTurboBoost = 0x4000000000LL;
 
 static void disable_tb(__unused void * param_not_used) {
-	wrmsr64(MSR_IA32_MISC_ENABLE, rdmsr64(MSR_IA32_MISC_ENABLE) | disableTurboBoost);
+//	wrmsr64(MSR_IA32_MISC_ENABLE, rdmsr64(MSR_IA32_MISC_ENABLE) | disableTurboBoost);
 }
 
 
@@ -53,7 +53,7 @@ static void enable_prochot(__unused void * param_not_used) {
 }
 
 static void enable_tb(__unused void * param_not_used) {
-	wrmsr64(MSR_IA32_MISC_ENABLE, rdmsr64(MSR_IA32_MISC_ENABLE) & ~disableTurboBoost);
+//	wrmsr64(MSR_IA32_MISC_ENABLE, rdmsr64(MSR_IA32_MISC_ENABLE) & ~disableTurboBoost);
 }
 
 static kern_return_t start(kmod_info_t *ki, void *d) {
