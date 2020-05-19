@@ -22,7 +22,7 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * Description:
- *   Disables upon load and re-enables upon unload TurboBoost and BD Prochot 
+ *   Disables upon load and re-enables upon unload TurboBoost and BD Prochot
  *   Intel Core CPU features using MSR register MSR_IA32_MISC_ENABLE (0x1a0)
  *	 and ?? (0x1FC).
  */
@@ -35,41 +35,30 @@ extern void mp_rendezvous_no_intrs(
 		void (*action_func)(void *),
 		void *arg);
 
-const uint64_t expectedFeatures  = 0x850089LL;
-const uint64_t disableTurboBoost = 0x4000000000LL;
-
-static void disable_tb(__unused void * param_not_used) {
-	wrmsr64(MSR_IA32_MISC_ENABLE, rdmsr64(MSR_IA32_MISC_ENABLE) | disableTurboBoost);
-}
-
-
 //Using the static data from unclewebb for now.
-static void disable_prochot(__unused void * param_not_used) {
+static void disable_prochot(__unused void *param_not_used)
+{
 	wrmsr64(0x1FC, rdmsr64(0x1FC) & 0xFFFFFFFE);
 }
 
-static void enable_prochot(__unused void * param_not_used) {
+static void enable_prochot(__unused void *param_not_used)
+{
 	wrmsr64(0x1FC, rdmsr64(0x1FC) | 0x1);
 }
 
-static void enable_tb(__unused void * param_not_used) {
-	wrmsr64(MSR_IA32_MISC_ENABLE, rdmsr64(MSR_IA32_MISC_ENABLE) & ~disableTurboBoost);
-}
-
-static kern_return_t start(kmod_info_t *ki, void *d) {
+static kern_return_t start(kmod_info_t *ki, void *d)
+{
 	uint64_t prev = rdmsr64(MSR_IA32_MISC_ENABLE);
-	mp_rendezvous_no_intrs(disable_tb, NULL);
-	mp_rendezvous_no_intrs(disable_prochot, NULL); //Q: does this just run my function? 
-												   //A: YEP, disables ALL interrupts and runs it. Nice. 
-	printf("Disabled Turbo Boost: %llx -> %llx\n", prev, rdmsr64(MSR_IA32_MISC_ENABLE));
+	mp_rendezvous_no_intrs(disable_prochot, NULL);
+	printf("Disabled BD PROCHOT: %llx -> %llx\n", prev, rdmsr64(MSR_IA32_MISC_ENABLE));
 	return KERN_SUCCESS;
 }
 
-static kern_return_t stop(kmod_info_t *ki, void *d) {
+static kern_return_t stop(kmod_info_t *ki, void *d)
+{
 	uint64_t prev = rdmsr64(MSR_IA32_MISC_ENABLE);
-	mp_rendezvous_no_intrs(enable_tb, NULL);
 	mp_rendezvous_no_intrs(enable_prochot, NULL);
-	printf("Re-enabled Turbo Boost: %llx -> %llx\n", prev, rdmsr64(MSR_IA32_MISC_ENABLE));
+	printf("Re-enabled BD PROCHOT: %llx -> %llx\n", prev, rdmsr64(MSR_IA32_MISC_ENABLE));
 	return KERN_SUCCESS;
 }
 
@@ -78,5 +67,5 @@ extern kern_return_t _stop(kmod_info_t *ki, void *data);
 
 KMOD_EXPLICIT_DECL(me.conductive.bernardo.NoBatteryNoProblem, "0.0.1", _start, _stop)
 __private_extern__ kmod_start_func_t *_realmain = start;
-__private_extern__ kmod_stop_func_t  *_antimain = stop;
+__private_extern__ kmod_stop_func_t *_antimain = stop;
 __private_extern__ int _kext_apple_cc = __APPLE_CC__;
